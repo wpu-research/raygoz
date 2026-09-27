@@ -1,0 +1,10 @@
+data/*
+!data/README.md
+models/
+runs/
+.venv/
+__pycache__/
+*.pyc
+*.pt
+*.onnx
+.env
