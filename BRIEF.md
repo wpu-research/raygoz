@@ -75,6 +75,8 @@ Dayanak: `arastirma/veri-literatur-pazar.md`.
 
 Toplam: ~6–8 hafta.
 
+**Durum:** 1. aşama tamamlandı (27.09.2026) — `docs/veri-raporu.md`. Kararlar: iki tespit modeli (yüzey, bileşen) + bir sınıflandırıcı; bölme görsel benzerlik kümelerine göre; korugasyon veri yetersizliğinden faz 1'den çıkarıldı.
+
 ### Riskler
 - Açık setler küçük ve farklı kameralardan; saha verisinde doğruluk düşer → pilotta operatör verisiyle ince ayar şart.
 - Literatürdeki %94–97 mAP küçük setlerde; sahada gerçekçi değil.

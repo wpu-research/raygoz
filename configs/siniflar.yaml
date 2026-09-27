@@ -1,0 +1,28 @@
+# Ortak sınıf şeması. Kaynak set sınıfları -> RayGöz sınıfları.
+# uic: UIC 712 / IRS 70712 kodu (yaklaşık eşleme; işletmeci kataloğuyla doğrulanacak)
+# faz: 1 = ilk hedef, 2 = sonraki faz
+yuzey:
+  siniflar:
+    squat:        {uic: "227",  faz: 1, ad: "Ezilme (squat)"}
+    dokulme:      {uic: "2221", faz: 1, ad: "Dökülme / shelling / spalling"}
+    pullanma:     {uic: "2221", faz: 1, ad: "Pullanma (flaking)"}
+    catlak:       {uic: null,   faz: 2, ad: "Yüzey çatlağı"}
+    head_check:   {uic: "2223", faz: 2, ad: "Ray başı yorulma çatlağı / RCF"}
+    kirik:        {uic: null,   faz: 2, ad: "Ray kırığı / kopması"}
+    iz:           {uic: null,   faz: 2, ad: "Yüzey izi (scar)"}
+  eslemeler:
+    kakashi: {Cracks: catlak, Flaking: pullanma, Rails: null, Scars: iz, Shelling: dokulme, Spalling: dokulme, Squat: squat, breaks: kirik}
+    unal:    {"Head - Checks": head_check, RCF: head_check, Spalling: dokulme}
+bilesen:
+  siniflar:
+    baglanti_eksik:  {uic: null, faz: 1, ad: "Eksik bağlantı elemanı (klips)"}
+    tirfon_eksik:    {uic: null, faz: 1, ad: "Eksik tirfon / cıvata"}
+    ek_kusurlu:      {uic: null, faz: 1, ad: "Kusurlu ray eki"}
+    baglanti_saglam: {uic: null, faz: 1, ad: "Sağlam bağlantı elemanı"}
+    ek_saglam:       {uic: null, faz: 1, ad: "Sağlam ray eki"}
+  eslemeler:
+    fastener: {"Defective Joint": ek_kusurlu, "Good Fasteners": baglanti_saglam, "Good Joint": ek_saglam, "Missing Dogscrew": tirfon_eksik, "Missing Fastener": baglanti_eksik}
+siniflandirma:
+  # Görüntü düzeyi (bbox yok): rail_defect_cls klasör adları
+  eslemeler:
+    rail_defect_cls: {corrugation: korugasyon, crack: catlak, flaking: pullanma, putus: kirik, spalling: dokulme, squat: squat}
