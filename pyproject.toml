@@ -10,3 +10,8 @@ dependencies = [
     "numpy>=2.3.5",
     "pillow>=12.3.0",
 ]
+
+[dependency-groups]
+egitim = [
+    "ultralytics>=8.3",
+]
