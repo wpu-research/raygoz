@@ -6,4 +6,4 @@ Kaydedilmiş hat görüntülerinden ray yüzey kusurlarını ve hat bileşeni ku
 - Araştırma: `arastirma/`
 - Deney kayıtları: `docs/deneyler.md`
 
-**Durum (27.09.2026):** Proje açıldı; araştırma sürüyor, kod yok.
+**Durum (27.09.2026):** Araştırma bitti, plan `BRIEF.md` içinde onay bekliyor; kod yok.
