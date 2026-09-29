@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path
 
 import yaml
-from ultralytics import YOLO
+from ultralytics import RTDETR, YOLO
 
 KOK = Path(__file__).resolve().parents[1]
 
@@ -20,7 +20,7 @@ def veri_yaml(gorev: str) -> str:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("gorev", choices=["yuzey", "bilesen"])
+    ap.add_argument("gorev", choices=["yuzey", "bilesen", "yuzey_birlesik"])
     ap.add_argument("model", default="yolo11s.pt")
     ap.add_argument("--epochs", type=int, default=100)
     ap.add_argument("--imgsz", type=int, default=640)
@@ -28,12 +28,13 @@ def main():
     ap.add_argument("--patience", type=int, default=25)
     a = ap.parse_args()
     ad = f"{a.gorev}_{Path(a.model).stem}_{a.imgsz}"
-    m = YOLO(a.model)
+    Sinif = RTDETR if "rtdetr" in a.model else YOLO
+    m = Sinif(a.model)
     m.train(data=veri_yaml(a.gorev), epochs=a.epochs, imgsz=a.imgsz,
             batch=a.batch, patience=a.patience, project=str(KOK / "runs"), name=ad, exist_ok=True,
             seed=42, deterministic=True, workers=8, plots=True)
     # Kilitli test setinde değerlendirme
-    en_iyi = YOLO(KOK / "runs" / ad / "weights" / "best.pt")
+    en_iyi = Sinif(KOK / "runs" / ad / "weights" / "best.pt")
     r = en_iyi.val(data=veri_yaml(a.gorev), split="test",
                    project=str(KOK / "runs"), name=ad + "_test", exist_ok=True, plots=True)
     satirlar = [f"# {ad} — test", "", f"mAP@0.5: {r.box.map50:.3f} · mAP@0.5:0.95: {r.box.map:.3f}", "",
