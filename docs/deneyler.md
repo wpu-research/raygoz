@@ -7,6 +7,12 @@ Metrikler **kilitli test setinde**. Eğitim makinesi: ofis (RTX 3080 Ti 12 GB, W
 |---|---|---|---|---|---|---|---|---|
 | 1 | 27.09.2026 | bilesen | YOLO11s, 640 | 83 (48) | 15 dk | **0,871** | 0,569 | AGPL — yalnız araştırma |
 | 2 | 27.09.2026 | yuzey | YOLO11s, 640 | 93 (72) | 29 dk | **0,540** | 0,258 | AGPL — yalnız araştırma |
+| 3 | 29.09.2026 | yuzey | YOLO11s, **1024** | — | ~1 sa* | 0,513 | 0,240 | AGPL — yalnız araştırma |
+| 4 | 29.09.2026 | yuzey | **YOLO11m**, 640 | — | ~1 sa | 0,524 | 0,274 | AGPL — yalnız araştırma |
+| 5 | 29.09.2026 | yuzey_birlesik | YOLO11s, 640 | 105 (78) | ~25 dk | 0,432 | 0,191 | AGPL — yalnız araştırma |
+| 6 | 29.09.2026 | yuzey | **RT-DETR-l**, 640 | 54 (29) | 1,7 sa | **0,572** | **0,292** | Ultralytics uygulaması AGPL; mimari Apache (resmî depo) |
+
+\* Deney 3 sırasında ofis makinesi uykuya geçti; gerçek süre ~1 saat.
 
 ## 1 · bilesen · YOLO11s
 | Sınıf | Test örnek | Precision | Recall | mAP@0.5 |
@@ -37,9 +43,26 @@ Metrikler **kilitli test setinde**. Eğitim makinesi: ofis (RTX 3080 Ti 12 GB, W
 - Kırık %100 ama testte 7 örnek; güvenilir değil.
 - Sebep adayları: az kaynak görüntü (~1.100), üç farklı kaynaktan farklı kamera/çözünürlük, 640×640'a gerilmiş görüntülerde küçük kusurların kaybolması.
 
+## 3–6 · yüzey karşılaştırması (recall, test)
+| Sınıf (test örnek) | #2 YOLO11s 640 | #3 1024 | #4 YOLO11m | #6 RT-DETR-l |
+|---|---|---|---|---|
+| squat (15) | 0,333 | — | — | **0,533** |
+| dokulme (64) | **0,453** | — | — | 0,283 |
+| pullanma (7) | **0,429** | — | — | 0,286 |
+| catlak (14) | 0,429 | — | — | **0,641** |
+| head_check (35) | **0,457** | — | — | 0,371 |
+| **mAP@0.5** | 0,540 | 0,513 | 0,524 | **0,572** |
+
+Deney 5 (birleşik sınıf) test: yuzey_hasari P 0,291 / R 0,333 / mAP50 0,302; head_check 0,114'e düştü.
+
+### Sonuçlar
+- **Çözünürlük (#3) ve model büyüklüğü (#4) işe yaramadı** → darboğaz model değil, **veri**.
+- **Sınıf birleştirme (#5) kötüleştirdi:** üç farklı kaynaktan gelen, görünüşü çok farklı kusurlar tek sınıfta toplanınca model ortak bir desen bulamıyor; head check bile bozuldu. Birleştirme fikri bırakıldı.
+- **RT-DETR (#6) en iyisi** (+3 puan mAP50, +3,4 puan mAP50-95); squat ve çatlakta belirgin iyi, dökülme ve head check'te daha kötü. Ürün yolu için Apache lisanslı mimari olması avantaj.
+- **Faz 1 yüzey sınıflarının hiçbiri kabul kriterini (recall ≥ 0,70) geçmiyor.** Açık verideki tavan ~0,55–0,60 mAP50 görünüyor.
+
 ## Sonraki denemeler (öncelik sırasıyla)
-1. **yuzey, daha yüksek çözünürlük:** imgsz 1024 (küçük kusurlar gerilmede kayboluyor olabilir).
-2. **yuzey, daha büyük model:** YOLO11m.
-3. **Sınıf birleştirme:** squat + dökülme + pullanma → tek "yüzey hasarı" sınıfı (işletmeci için önce "burada kusur var" demek, tipini ikinci aşamada sınıflandırıcıya bırakmak). Recall'ı ne kadar yükselttiğini ölç.
-4. **RT-DETR (Apache) karşılaştırması** — ürün adayı lisans.
-5. **PatchCore** anomali katmanı (3. aşama) — kaçırılan kusurları yakalar mı?
+1. ~~Çözünürlük 1024~~ · ~~YOLO11m~~ · ~~sınıf birleştirme~~ · ~~RT-DETR karşılaştırması~~ — yapıldı (#3–#6).
+2. **Kaynak bazında değerlendirme:** test sonuçlarını kakashi / unal kaynaklarına ayır — alan farkı (kamera, çözünürlük) ne kadar etkili?
+3. **PatchCore** anomali katmanı (3. aşama): sağlam ray görüntüleriyle (eğitimde 1.367 arka plan görüntüsü) eğit, kaçırılan kusurları yakalıyor mu?
+4. **Saha verisi:** asıl sıçrama işletmecinin kendi görüntüleriyle olur; pilot sözleşmesinde veri paylaşımı ve etiketleme planı.
